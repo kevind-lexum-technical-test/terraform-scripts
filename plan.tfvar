@@ -1,5 +1,6 @@
 aws_access_key=""
 aws_secret_key=""
-rds_db_password="passwordrds123"
+rds_db_password=""
 rds_db_username="dbadmin"
 account_id=""
+sns_alert_email=""
