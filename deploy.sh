@@ -5,14 +5,14 @@ defaultPath=$(pwd)
 ansiblePath="${defaultPath}/ansible-lexum-app"
 javaAppPath="${defaultPath}/lexum-app"
 deploymentPath="${defaultPath}/aws-terraform-deployment-lexum"
+TAG_NAME="aws-kev-test-java-server"
+REGION="ca-central-1"  # Change this to your desired AWS region
+ALB_NAME="aws-kev-test-java-server-alb"
+REGION="ca-central-1"
 
 rm -rf "${ansiblePath}"
 rm -rf "${javaAppPath}"
 rm -rf "${deploymentPath}"
-
-# Set Variables
-TAG_NAME="aws-kev-test-java-server"
-REGION="ca-central-1"  # Change this to your desired AWS region
 
 # Function to find the Instance ID
 find_instance_id() {
@@ -167,5 +167,24 @@ terraform apply "${deploymentPath}/tf.plan" || exit 1
 # Run Checks
 find_instance_id
 terminate_instance
+
+# Get ALB DNS Name
+ALB_DNS=$(aws elbv2 describe-load-balancers \
+  --region "${REGION}" \
+  --names "${ALB_NAME}" \
+  --query "LoadBalancers[0].DNSName" \
+  --output text)
+
+# Check if DNS Name was found
+if [ -z "$ALB_DNS" ]; then
+  echo "No ALB found with name ${ALB_NAME}. Please check the ALB name and try again."
+  exit 1
+fi
+
+# Print and Run the Curl Command
+echo "Generated curl command (please wait a few min for ec2 to start and setup):"
+echo "curl http://${ALB_DNS}:80/health"
+echo "curl http://${ALB_DNS}:80/unhealth"
+echo "curl http://${ALB_DNS}:80/data"
 
 echo "Script completed successfully!"
