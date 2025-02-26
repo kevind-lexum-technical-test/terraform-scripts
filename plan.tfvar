@@ -1,5 +1,5 @@
-aws_access_key=""
-aws_secret_key=""
+aws_access_key="AKIAY6QVZLVMUHJEBT34"
+aws_secret_key="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"
 rds_db_password="passwordrds123"
 rds_db_username="dbadmin"
-account_id=""
+account_id="615299767641"
